@@ -46,6 +46,10 @@ tasks.register('compileVite', NpmTask) {
     }
 }
 
+node {
+    download = true
+}
+
 processResources {
     dependsOn tasks.compileVite
 }
