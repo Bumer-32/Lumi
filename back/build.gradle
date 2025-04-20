@@ -1,13 +1,19 @@
 
 plugins {
-    id 'org.jetbrains.kotlin.jvm' version '2.1.10'
-    id 'org.jetbrains.kotlin.plugin.serialization' version '2.1.10'
-    id 'io.ktor.plugin' version '3.1.2'
+    id "org.jetbrains.kotlin.jvm" version "2.1.10"
+    id "org.jetbrains.kotlin.plugin.serialization" version "2.1.10"
+    id "io.ktor.plugin" version "3.1.2"
+    id "com.github.node-gradle.node" version "7.1.0"
+    id "maven-publish"
 }
 
-group "ua.pp.lumivoid"
-version "0.0.1"
+group = "ua.pp.lumivoid"
+version = "0.0.1"
 mainClassName = "io.ktor.server.netty.EngineMain"
+
+base {
+    archivesName  = "lumi-server"
+}
 
 def isDevelopment = project.ext.has("development")
 applicationDefaultJvmArgs = ["-Dio.ktor.development=$isDevelopment"]
@@ -28,4 +34,39 @@ dependencies {
     implementation libs.ktor.server.config.yaml
     testImplementation libs.ktor.server.test.host
     testImplementation libs.kotlin.test.junit
+}
+
+tasks.register('compileVite', NpmTask) {
+    group = "build"
+    dependsOn tasks.npmInstall
+
+    args = ["run", "build", "--", "--emptyOutDir"]
+    execOverrides {
+        it.workingDir = file("../front")
+    }
+}
+
+processResources {
+    dependsOn tasks.compileVite
+}
+
+publishing {
+    publications {
+        create("mavenJava", MavenPublication) {
+            //noinspection GroovyAssignabilityCheck
+            from components.java
+        }
+    }
+
+    repositories {
+        maven {
+            name = "Lumivoid"
+            url = "https://maven.lumivoid.pp.ua/repository/lumivoid/"
+
+            credentials {
+                username = project.hasProperty("mavenUsername") ? project.mavenUsername : System.getenv("MAVEN_USERNAME")
+                password = project.hasProperty("mavenPassword") ? project.mavenPassword : System.getenv("MAVEN_PASSWORD")
+            }
+        }
+    }
 }
