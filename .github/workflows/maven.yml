@@ -24,6 +24,9 @@ jobs:
           java-version: 21
           distribution: "microsoft"
 
+      - name: setup nodejs
+        uses: actions/setup-node@v4
+
       - name: make gradle wrapper executable
         run: chmod +x ./gradlew
 
