@@ -24,6 +24,9 @@ jobs:
           java-version: ${{ matrix.java }}
           distribution: "microsoft"
 
+      - name: setup nodejs
+        uses: actions/setup-node@v4
+
       - name: make gradle wrapper executable
         run: chmod +x ./gradlew
 
