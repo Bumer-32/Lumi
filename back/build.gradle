@@ -3,7 +3,6 @@ plugins {
     id "org.jetbrains.kotlin.jvm" version "2.1.10"
     id "org.jetbrains.kotlin.plugin.serialization" version "2.1.10"
     id "io.ktor.plugin" version "3.1.2"
-    id "com.github.node-gradle.node" version "7.1.0"
     id "maven-publish"
 }
 
@@ -38,7 +37,6 @@ dependencies {
 
 tasks.register("compileVite") {
     group = "build"
-    dependsOn tasks.npmInstall
 
     doLast {
 		if (System.getProperty("os.name").toLowerCase().contains("win")) {
