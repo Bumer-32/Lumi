@@ -8,10 +8,11 @@ plugins {
 
 group = "ua.pp.lumivoid"
 version = "0.0.1"
+archivesBaseName = "lumi-server"
 mainClassName = "io.ktor.server.netty.EngineMain"
 
 base {
-    archivesName  = "lumi-server"
+    archivesName  = archivesBaseName
 }
 
 def isDevelopment = project.ext.has("development")
@@ -62,6 +63,9 @@ publishing {
     publications {
         create("mavenJava", MavenPublication) {
             //noinspection GroovyAssignabilityCheck
+            artifactId = archivesBaseName
+            groupId = group
+            version = version
             from components.java
         }
     }
@@ -69,7 +73,7 @@ publishing {
     repositories {
         maven {
             name = "Lumivoid"
-            url = "https://maven.lumivoid.pp.ua/repository/lumivoid/"
+            url = "https://maven.lumivoid.pp.ua/releases"
 
             credentials {
                 username = project.hasProperty("mavenUsername") ? project.mavenUsername : System.getenv("MAVEN_USERNAME")
