@@ -36,18 +36,24 @@ dependencies {
     testImplementation libs.kotlin.test.junit
 }
 
-tasks.register('compileVite', NpmTask) {
+tasks.register("compileVite") {
     group = "build"
     dependsOn tasks.npmInstall
 
-    args = ["run", "build", "--", "--emptyOutDir"]
-    execOverrides {
-        it.workingDir = file("../front")
-    }
-}
+    doLast {
+		if (System.getProperty("os.name").toLowerCase().contains("win")) {
 
-node {
-    download = true
+			exec {
+				workingDir  projectDir
+				commandLine "cmd", "/c", "${projectDir}/../front/build.bat"
+			}
+		} else {
+			exec {
+				workingDir  projectDir
+				commandLine "bash", "-c", "chmod +x ${projectDir}/../front/build.sh && ${projectDir}/../front/build.sh"
+			}
+		}
+	}
 }
 
 processResources {
